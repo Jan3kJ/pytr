@@ -533,6 +533,7 @@ class TradeRepublicApi:
         size,
         limit,
         expiry,
+        sell_fractions,
         expiry_date=None,
         warnings_shown=None,
     ):
@@ -546,6 +547,7 @@ class TradeRepublicApi:
                 'expiry': {'type': expiry},
                 'limit': limit,
                 'mode': 'limit',
+                'sellFractions': sell_fractions,
                 'size': size,
                 'type': order_type,
             },
@@ -593,6 +595,7 @@ class TradeRepublicApi:
         size,
         stop,
         expiry,
+        sell_fractions,
         expiry_date=None,
         warnings_shown=None,
     ):
@@ -605,6 +608,7 @@ class TradeRepublicApi:
                 'exchangeId': exchange,
                 'expiry': {'type': expiry},
                 'mode': 'stopMarket',
+                'sellFractions': sell_fractions,
                 'size': size,
                 'stop': stop,
                 'type': order_type,
