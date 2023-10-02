@@ -382,7 +382,7 @@ class TradeRepublicApi:
         return asyncio.get_event_loop().run_until_complete(self._receive_one(fut, timeout=timeout))
 
     async def portfolio(self):
-        return await self.subscribe({'type': 'portfolio'})
+        return await self.subscribe({'type': 'compactPortfolio'})
 
     async def watchlist(self):
         return await self.subscribe({'type': 'watchlist'})
