@@ -252,7 +252,7 @@ class TradeRepublicApi:
         ssl_context = ssl.create_default_context(cafile=certifi.where())
         extra_headers = None
         connection_message = {'locale': self._locale}
-        connect_id = 21
+        connect_id = 27
 
         if self._weblogin:
             # authenticate with cookies, set different connection message and connect ID
@@ -269,7 +269,7 @@ class TradeRepublicApi:
                 'clientId': 'app.traderepublic.com',
                 'clientVersion': '5582',
             }
-            connect_id = 22
+            connect_id = 28
 
         self._ws = await websockets.connect('wss://api.traderepublic.com', ssl=ssl_context, extra_headers=extra_headers)
         await self._ws.send(f'connect {connect_id} {json.dumps(connection_message)}')
