@@ -545,12 +545,12 @@ class TradeRepublicApi:
                 'instrumentId': isin,
                 'exchangeId': exchange,
                 'expiry': {'type': expiry},
+                'limit': limit,
                 'mode': 'limit',
+                'sellFractions': sell_fractions,
                 'size': size,
                 'type': order_type,
             },
-            'sellFractions': sell_fractions,
-            'limit': limit,
         }
         if expiry == 'gtd' and expiry_date:
             parameters['parameters']['expiry']['value'] = expiry_date
@@ -577,10 +577,10 @@ class TradeRepublicApi:
                 'exchangeId': exchange,
                 'expiry': {'type': expiry},
                 'mode': 'market',
+                'sellFractions': sell_fractions,
                 'size': size,
                 'type': order_type,
             },
-            'sellFractions': sell_fractions,
         }
         if expiry == 'gtd' and expiry_date:
             parameters['parameters']['expiry']['value'] = expiry_date
@@ -613,8 +613,6 @@ class TradeRepublicApi:
                 'stop': stop,
                 'type': order_type,
             },
-            'sellFractions': sell_fractions,
-            'stop': stop,
         }
         if expiry == 'gtd' and expiry_date:
             parameters['parameters']['expiry']['value'] = expiry_date
