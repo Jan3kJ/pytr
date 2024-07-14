@@ -2,6 +2,7 @@ import json
 import sys
 from pygments import highlight, lexers, formatters
 import time
+from getpass import getpass
 
 from pytr.api import TradeRepublicApi, CREDENTIALS_FILE
 from pytr.utils import get_logger
@@ -38,14 +39,14 @@ def login(phone_no=None, pin=None, web=True):
         CREDENTIALS_FILE.parent.mkdir(parents=True, exist_ok=True)
         if phone_no is None:
             log.info('Credentials file not found')
-            print('Please enter your TradeRepbulic phone number in the format +4912345678:')
+            print('Please enter your TradeRepublic phone number in the format +4912345678:')
             phone_no = input()
         else:
             log.info('Phone number provided as argument')
 
         if pin is None:
-            print('Please enter your TradeRepbulic pin:')
-            pin = input()
+            print('Please enter your TradeRepublic pin:')
+            pin = getpass(prompt='Pin (Input is hidden):')
 
         print('Save credentials? Type "y" to save credentials:')
         save = input()

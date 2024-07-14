@@ -9,6 +9,7 @@ import shtab
 
 from importlib.metadata import version
 from pathlib import Path
+from datetime import datetime, timedelta
 
 from pytr.utils import get_logger, check_version, export_transactions
 from pytr.dl import DL
@@ -48,8 +49,8 @@ def get_main_parser():
     # Create parent subparser with common login arguments
     parser_login_args = argparse.ArgumentParser(add_help=False)
     parser_login_args.add_argument('--applogin', help='Use app login instead of  web login', action='store_true')
-    parser_login_args.add_argument('-n', '--phone_no', help='TradeRepbulic phone number (international format)')
-    parser_login_args.add_argument('-p', '--pin', help='TradeRepbulic pin')
+    parser_login_args.add_argument('-n', '--phone_no', help='TradeRepublic phone number (international format)')
+    parser_login_args.add_argument('-p', '--pin', help='TradeRepublic pin')
 
     # login
     info = (
@@ -91,14 +92,18 @@ def get_main_parser():
     parser_dl_docs.add_argument(
         '--workers', help='Number of workers for parallel downloading', metavar='WORKERS', default=8, type=int
     )
+    parser_dl_docs.add_argument('--universal', help='Platform independent file names', action='store_true')
     # portfolio
     info = 'Show current portfolio'
-    parser_cmd.add_parser(
+    parser_portfolio = parser_cmd.add_parser(
         'portfolio',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         parents=[parser_login_args],
         help=info,
         description=info,
+    )
+    parser_portfolio.add_argument(
+        '-o', '--output', help='Output path of CSV file', metavar='OUTPUT', type=Path
     )
     # details
     info = 'Get details for an ISIN'
@@ -194,14 +199,14 @@ def main():
         if args.last_days == 0:
             since_timestamp = 0
         else:
-            since_timestamp = (time.time() - (24 * 3600 * args.last_days)) * 1000
-
+            since_timestamp = (datetime.now().astimezone() - timedelta(days=args.last_days)).timestamp()
         dl = DL(
             login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin),
             args.output,
             args.format,
             since_timestamp=since_timestamp,
             max_workers=args.workers,
+            universal_filepath=args.universal,
         )
         asyncio.get_event_loop().run_until_complete(dl.dl_loop())
     elif args.command == 'set_price_alarms':
@@ -212,7 +217,10 @@ def main():
     elif args.command == 'details':
         Details(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin), args.isin).get()
     elif args.command == 'portfolio':
-        Portfolio(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin)).get()
+        p = Portfolio(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin))
+        p.get()
+        if args.output is not None:
+            p.portfolio_to_csv(args.output)
     elif args.command == 'export_transactions':
         export_transactions(args.input, args.output, args.lang)
     elif args.version:
